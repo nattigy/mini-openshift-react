@@ -1,285 +1,274 @@
-# Mini OpenShift React UI
+# Mini OpenShift - React Frontend
 
-## Phase 1 - Setup & Infrastructure ✅ COMPLETE
+A modern, responsive web interface for the Mini OpenShift platform built with Next.js 15, React 18, and Tailwind CSS v4.
 
-This is a Next.js 14 React application for interacting with the Mini OpenShift FastAPI backend.
+## Features
 
-### Tech Stack
-- **Next.js 15** - React framework with App Router
-- **TypeScript** - Type-safe development
-- **Tailwind CSS** - Utility-first CSS framework
-- **Zustand** - Lightweight state management
-- **Axios** - HTTP client for API communication
-- **js-cookie** - Cookie management for JWT tokens
+- 🎨 **Modern UI/UX**: Clean, responsive design with Tailwind CSS v4
+- 🔐 **Authentication**: Secure login/signup with JWT tokens
+- 👥 **User Management**: Admin dashboard for managing users
+- 📦 **Project Management**: Create and manage Kubernetes-backed projects
+- 🚀 **Deployment Management**: Deploy, scale, and monitor applications
+- 🐳 **Pod Management**: Real-time pod monitoring with log viewing
+- 🌙 **Dark Mode**: Theme switching support
+- 🔔 **Notifications**: Toast notifications for user feedback
+- 🔍 **Search & Pagination**: Efficient data browsing
+- 📱 **Responsive Design**: Works seamlessly on all devices
 
-### Project Structure
+## Tech Stack
+
+- **Framework**: Next.js 15 (App Router)
+- **UI Library**: React 18
+- **Styling**: Tailwind CSS v4
+- **State Management**: Zustand
+- **HTTP Client**: Axios
+- **Authentication**: JWT with cookies
+- **TypeScript**: Full type safety
+
+## Prerequisites
+
+- Node.js 18+ 
+- npm or yarn
+- Running backend API (see [mini-openshift-fastapi](https://github.com/nattigy/mini-openshift-fastapi))
+
+## Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/nattigy/mini-openshift-react.git
+   cd mini-openshift-react
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   
+   Create a `.env.local` file in the root directory:
+   ```env
+   NEXT_PUBLIC_API_URL=http://localhost:8000
+   ```
+
+4. **Run the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser**
+   
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## Available Scripts
+
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm start` - Start production server
+- `npm run lint` - Run ESLint
+
+## Default Credentials
+
+- **Email**: `test@example.com`
+- **Password**: `password123`
+
+## Project Structure
+
 ```
 mini-openshift-react/
 ├── src/
-│   ├── app/                    # Next.js App Router
-│   │   ├── layout.tsx          # Root layout
-│   │   ├── page.tsx            # Home page
-│   │   ├── globals.css         # Global styles & Tailwind
-│   │   └── providers.tsx       # App providers & auth init
-│   ├── components/             # Reusable components (Phase 2)
-│   ├── lib/
-│   │   └── utils.ts           # Helper utilities
-│   ├── services/
-│   │   └── api.ts             # API client with interceptors
-│   ├── store/
-│   │   └── authStore.ts       # Zustand auth store
-│   ├── types/
-│   │   └── index.ts           # TypeScript interfaces
-│   └── middleware.ts           # Route protection
-├── package.json
-├── tailwind.config.ts
-├── postcss.config.js
-├── tsconfig.json
-├── next.config.js
-└── .env.local
+│   ├── app/                     # Next.js App Router
+│   │   ├── (auth)/             # Authentication pages
+│   │   ├── (dashboard)/        # Dashboard pages
+│   │   ├── projects/           # Project-specific pages
+│   │   ├── globals.css         # Global styles
+│   │   └── layout.tsx          # Root layout
+│   ├── components/             # React components
+│   │   ├── layout/             # Layout components
+│   │   ├── modals/             # Modal components
+│   │   ├── pages/              # Page components
+│   │   ├── Button.tsx          # UI components
+│   │   ├── Card.tsx
+│   │   ├── Input.tsx
+│   │   └── ...
+│   ├── services/               # API services
+│   │   └── api.ts              # API client
+│   ├── store/                  # Zustand stores
+│   │   ├── authStore.ts
+│   │   ├── notificationStore.ts
+│   │   └── themeStore.ts
+│   └── types/                  # TypeScript types
+│       └── index.ts
+├── public/                     # Static assets
+├── docs/                       # Documentation
+└── package.json
 ```
 
----
+## Key Pages
 
-## ✅ Completed in Phase 1
+### Authentication
+- `/login` - User login
+- `/signup` - User registration
 
-### 1. **Project Initialization**
-- ✅ Next.js 15 with App Router
-- ✅ TypeScript support
-- ✅ Tailwind CSS with @tailwindcss/postcss
-- ✅ ESLint configuration
-- ✅ Build configuration
-- ✅ Environment variables setup
+### Dashboard
+- `/dashboard` - Main dashboard overview
+- `/users` - User management (admin only)
+- `/projects` - Project listing
+- `/settings` - User settings
 
-### 2. **API Client Service** (`src/services/api.ts`)
-- ✅ Centralized `APIClient` class
-- ✅ Request interceptor: auto-injects JWT token from cookies
-- ✅ Response interceptor: handles 401 errors and redirects to login
-- ✅ Cookie-based token storage
-- ✅ Pre-configured methods:
-  - `login(email, password)` - OAuth2 token login
-  - `getUsers(skip, limit)` - Fetch all users
-  - `getCurrentUser()` - Fetch current authenticated user
-  - `createUser(data)` - Create new user
-  - `getProjects(skip, limit)` - Fetch all projects
-  - `createProject(data)` - Create new project
-  - `deleteProject(projectId)` - Delete project
+### Project Pages
+- `/projects/[projectId]/deployments` - Manage deployments
+- `/projects/[projectId]/pods` - Monitor pods and view logs
 
-### 3. **Authentication System** (`src/store/authStore.ts`)
-- ✅ Zustand state management store
-- ✅ Token persistence in cookies
-- ✅ User object storage
-- ✅ Loading and error states
-- ✅ `setUser()` - Set current user
-- ✅ `setToken()` - Set/remove token with cookie sync
-- ✅ `logout()` - Clear auth state
-- ✅ `initialize()` - Auto-load token on app start
+## Features in Detail
 
-### 4. **Route Protection** (`src/middleware.ts`)
-- ✅ Protected routes: `/dashboard`, `/projects`, `/users`, `/settings`
-- ✅ Auto-redirect unauthenticated users to `/login`
-- ✅ Auto-redirect authenticated users away from `/login`
-- ✅ Works with Next.js 15 middleware
+### 🚀 Deployment Management
+- Create new deployments with custom configurations
+- Scale deployments up or down
+- Monitor deployment status (Available/Progressing/Failed)
+- Delete deployments
+- Search and filter deployments
 
-### 5. **Styling Foundation** (`src/app/globals.css`)
-- ✅ Tailwind CSS directives
-- ✅ Reset styles
-- ✅ Base typography
-- ✅ Ready for component classes (badge, button, card, input, label)
+### 🐳 Pod Management
+- Real-time pod status monitoring
+- View pod logs with auto-refresh
+- Delete pods
+- Filter pods by status
+- Container-level details
 
-### 6. **TypeScript Types** (`src/types/index.ts`)
-- ✅ `User` interface
-- ✅ `Project` interface
-- ✅ `ApiError` interface
-- ✅ `LoginResponse` interface
+### 👥 User Management (Admin)
+- Create new users
+- Update user information
+- Delete users
+- Search users
+- Role-based access control
 
-### 7. **Utilities** (`src/lib/utils.ts`)
-- ✅ `formatDate()` - Format dates
-- ✅ `formatDateTime()` - Format with time
-- ✅ `truncate()` - Truncate strings
-- ✅ `getInitials()` - Extract initials for avatars
-- ✅ `cn()` - Combine class names
+### 📦 Project Management
+- Create Kubernetes-backed projects
+- Update project details
+- Delete projects (removes K8s namespace)
+- Search projects
 
-### 8. **App Providers** (`src/app/providers.tsx`)
-- ✅ Auth initialization on app load
-- ✅ Auto-fetch current user if token exists
-- ✅ Error handling
+## Styling
 
----
+This project uses **Tailwind CSS v4** with the new `@import` and `@source` directives:
 
-## Getting Started
-
-### Prerequisites
-- Node.js 20+ (tested with Node 25)
-- npm 10+ or yarn
-
-### Installation
-```bash
-cd mini-openshift-react
-npm install
+```css
+@import "tailwindcss";
+@source "../";
 ```
 
-### Development
-```bash
-npm run dev
-```
-Open [http://localhost:3000](http://localhost:3000)
+The configuration is minimal as Tailwind v4 uses auto-detection for content files.
 
-### Build & Production
+## API Integration
+
+The frontend communicates with the FastAPI backend through the API client located at `src/services/api.ts`. All requests include JWT authentication tokens stored in cookies.
+
+### API Base URL
+Set in `.env.local`:
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+## State Management
+
+### Zustand Stores
+
+- **authStore**: User authentication state
+- **notificationStore**: Toast notifications
+- **themeStore**: Dark/light theme preference
+
+Example usage:
+```typescript
+import { useAuthStore } from '@/store/authStore';
+
+const { user, login, logout } = useAuthStore();
+```
+
+## Components
+
+### UI Components
+- `Button` - Styled button with variants (primary, secondary, danger, ghost)
+- `Card` - Container component with shadow
+- `Input` - Form input with validation styles
+- `Modal` - Reusable modal dialog
+- `SearchBar` - Debounced search input
+- `Pagination` - Page navigation
+- `NotificationCenter` - Toast notifications
+
+### Layout Components
+- `Header` - Top navigation bar
+- `Sidebar` - Side navigation menu
+- `DashboardLayout` - Main layout wrapper
+
+## TypeScript Types
+
+All API responses and data structures are fully typed. See `src/types/index.ts` for:
+- `User`
+- `Project`
+- `Deployment`
+- `Pod`
+- `ContainerStatus`
+- And more...
+
+## Development Tips
+
+### Adding a New Page
+1. Create page in `src/app/` directory
+2. Use `"use client"` directive if using hooks
+3. Wrap with `DashboardLayout` if needed
+4. Add route to sidebar navigation
+
+### Creating a New Component
+1. Add component to `src/components/`
+2. Export from `src/components/index.ts`
+3. Use TypeScript for props
+4. Follow existing naming conventions
+
+### API Calls
+Use the centralized API client:
+```typescript
+import { apiClient } from '@/services/api';
+
+const projects = await apiClient.getProjects();
+```
+
+## Troubleshooting
+
+### Styles Not Loading
+If Tailwind classes aren't applying:
+1. Clear `.next` cache: `rm -rf .next`
+2. Restart dev server: `npm run dev`
+
+### API Connection Issues
+Ensure:
+1. Backend is running on `http://localhost:8000`
+2. `.env.local` has correct `NEXT_PUBLIC_API_URL`
+3. CORS is enabled in backend
+
+## Documentation
+
+- [Frontend Integration Walkthrough](docs/frontend_integration_walkthrough.md)
+- [Project Summary](PROJECT_SUMMARY.md)
+- [Features List](FEATURES.md)
+
+## Production Build
+
 ```bash
 npm run build
 npm start
 ```
 
-### Linting
-```bash
-npm run lint
-```
+The optimized production build will be available at `http://localhost:3000`.
 
----
+## License
 
-## Configuration
+MIT
 
-### Environment Variables
-```env
-# .env.local
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
+## Contributing
 
-Adjust the `NEXT_PUBLIC_API_URL` if your FastAPI backend runs on a different host/port.
+Contributions are welcome! Please feel free to submit a Pull Request.
 
----
+## Related Projects
 
-## API Integration
-
-### Making API Requests
-```typescript
-import { apiClient } from '@/services/api';
-
-// Login
-const token = await apiClient.login('user@example.com', 'password');
-
-// Get users
-const users = await apiClient.getUsers(0, 100);
-
-// Create project
-const project = await apiClient.createProject({
-  name: 'my-project',
-  description: 'My first project'
-});
-
-// Delete project
-await apiClient.deleteProject(projectId);
-```
-
-### Using Auth Store
-```typescript
-import { useAuthStore } from '@/store/authStore';
-
-export function MyComponent() {
-  const user = useAuthStore((state) => state.user);
-  const token = useAuthStore((state) => state.token);
-  const logout = useAuthStore((state) => state.logout);
-
-  return (
-    <div>
-      {user && <p>Welcome, {user.username}!</p>}
-      <button onClick={logout}>Logout</button>
-    </div>
-  );
-}
-```
-
----
-
-## Build Verification
-
-✅ **Build Status:** SUCCESS
-- Compiled without errors
-- Type checking passed
-- Linting passed
-- Output: `/out` (static export ready)
-
-```
-✓ Compiled successfully in 1017ms
-✓ Linting and checking validity of types    
-✓ Collecting page data    
-✓ Generating static pages (4/4)
-✓ Collecting build traces    
-✓ Finalizing page optimization
-```
-
----
-
-## Next: Phase 2 - Components & UI
-
-### Tasks for Phase 2:
-1. Build reusable component library
-   - Button components (primary, secondary, danger)
-   - Card components
-   - Form inputs and labels
-   - Modal/Dialog components
-   - Table components
-   - Alert/Toast notifications
-   - Loading states (spinners, skeletons)
-
-2. Layout components
-   - Sidebar navigation
-   - Top navigation bar
-   - Breadcrumbs
-   - Footer
-
-3. Authentication UI
-   - Login page
-   - Signup page
-   - Logout confirmation
-
-4. Dashboard
-   - Overview/statistics
-   - Recent projects
-   - Recent users
-
----
-
-## Project Statistics
-
-- **Files Created:** 9 core files
-- **Dependencies:** 5 main + dev dependencies
-- **Lines of Code:** ~500 (excluding node_modules)
-- **Build Time:** ~1 second
-- **Bundle Size:** ~102 KB (First Load JS)
-
----
-
-## Troubleshooting
-
-### Build Errors
-If you encounter build errors:
-1. Clear `.next` folder: `rm -rf .next`
-2. Clean cache: `npm cache clean --force`
-3. Reinstall deps: `rm -rf node_modules package-lock.json && npm install`
-
-### Environment Issues
-- Ensure FastAPI backend is running on `http://localhost:8000`
-- Check `.env.local` has correct `NEXT_PUBLIC_API_URL`
-
-### Port Already in Use
-If port 3000 is busy:
-```bash
-npm run dev -- -p 3001
-```
-
----
-
-## Status: ✅ Phase 1 Complete
-
-**Ready for Phase 2: Component Library & UI**
-
-All foundational infrastructure is in place:
-- ✅ Next.js project configured
-- ✅ API client ready
-- ✅ Auth store ready  
-- ✅ Route protection ready
-- ✅ Build succeeds with no errors
-- ✅ Ready to build components and pages
-
+- [Backend API](https://github.com/nattigy/mini-openshift-fastapi) - FastAPI backend with Kubernetes integration
