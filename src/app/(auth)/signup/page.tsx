@@ -66,7 +66,7 @@ export default function SignupPage() {
     setIsLoading(true);
 
     try {
-      await apiClient.createUser({
+      await apiClient.signup({
         username: formData.username,
         email: formData.email,
         password: formData.password,
