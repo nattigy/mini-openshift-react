@@ -6,13 +6,24 @@ import { Modal } from '@/components/Modal';
 interface CreateDeploymentModalProps {
     isOpen: boolean;
     onClose: () => void;
-    onSubmit: (data: { name: string; image: string; replicas: number; environment?: Record<string, string> }) => Promise<void>;
+    onSubmit: (data: {
+        name: string;
+        image: string;
+        replicas: number;
+        port?: number;
+        image_pull_policy?: string;
+        service_type?: string;
+        environment?: Record<string, string>
+    }) => Promise<void>;
 }
 
 export function CreateDeploymentModal({ isOpen, onClose, onSubmit }: CreateDeploymentModalProps) {
     const [name, setName] = useState('');
     const [image, setImage] = useState('');
     const [replicas, setReplicas] = useState(1);
+    const [port, setPort] = useState<number | ''>('');
+    const [imagePullPolicy, setImagePullPolicy] = useState('IfNotPresent');
+    const [serviceType, setServiceType] = useState('ClusterIP');
     const [envKey, setEnvKey] = useState('');
     const [envValue, setEnvValue] = useState('');
     const [environment, setEnvironment] = useState<Record<string, string>>({});
@@ -22,11 +33,22 @@ export function CreateDeploymentModal({ isOpen, onClose, onSubmit }: CreateDeplo
         e.preventDefault();
         setIsLoading(true);
         try {
-            await onSubmit({ name, image, replicas, environment });
+            await onSubmit({
+                name,
+                image,
+                replicas,
+                port: port ? Number(port) : undefined,
+                image_pull_policy: imagePullPolicy,
+                service_type: serviceType,
+                environment
+            });
             // Reset form
             setName('');
             setImage('');
             setReplicas(1);
+            setPort('');
+            setImagePullPolicy('IfNotPresent');
+            setServiceType('ClusterIP');
             setEnvironment({});
         } catch (error) {
             // Error handled by parent
@@ -68,14 +90,56 @@ export function CreateDeploymentModal({ isOpen, onClose, onSubmit }: CreateDeplo
                     required
                 />
 
-                <Input
-                    label="Replicas"
-                    type="number"
-                    min={1}
-                    value={replicas}
-                    onChange={(e) => setReplicas(parseInt(e.target.value))}
-                    required
-                />
+                <div className="grid grid-cols-2 gap-4">
+                    <Input
+                        label="Replicas"
+                        type="number"
+                        min={1}
+                        value={replicas}
+                        onChange={(e) => setReplicas(parseInt(e.target.value))}
+                        required
+                    />
+                    <Input
+                        label="Container Port"
+                        type="number"
+                        min={1}
+                        max={65535}
+                        value={port}
+                        onChange={(e) => setPort(e.target.value ? parseInt(e.target.value) : '')}
+                        placeholder="80"
+                    />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Image Pull Policy
+                        </label>
+                        <select
+                            value={imagePullPolicy}
+                            onChange={(e) => setImagePullPolicy(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        >
+                            <option value="Always">Always</option>
+                            <option value="IfNotPresent">IfNotPresent</option>
+                            <option value="Never">Never</option>
+                        </select>
+                    </div>
+                    <div className="space-y-1">
+                        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                            Service Type
+                        </label>
+                        <select
+                            value={serviceType}
+                            onChange={(e) => setServiceType(e.target.value)}
+                            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white dark:bg-gray-700 text-gray-900 dark:text-white"
+                        >
+                            <option value="ClusterIP">ClusterIP</option>
+                            <option value="NodePort">NodePort</option>
+                            <option value="LoadBalancer">LoadBalancer</option>
+                        </select>
+                    </div>
+                </div>
 
                 <div className="space-y-2">
                     <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">

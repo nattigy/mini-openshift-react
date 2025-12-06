@@ -38,22 +38,22 @@ export const useThemeStore = create<ThemeStore>((set) => ({
   },
 
   initializeTheme: () => {
-    // Check localStorage first
+    // Check localStorage only - ignore system preference
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+
     if (savedTheme) {
+      // Use saved preference
       set({ theme: savedTheme });
       if (savedTheme === 'dark') {
         document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
       }
-      return;
-    }
-
-    // Check system preference
-    if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-      set({ theme: 'dark' });
-      document.documentElement.classList.add('dark');
     } else {
+      // Default to light mode (independent of system preference)
       set({ theme: 'light' });
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
     }
   },
 }));

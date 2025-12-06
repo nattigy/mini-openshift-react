@@ -7,7 +7,7 @@ import { apiClient } from '@/services/api';
 
 export default function SettingsPage() {
   const { user } = useAuthStore();
-  
+
   // Profile form state
   const [profileData, setProfileData] = useState({
     username: '',
@@ -15,7 +15,7 @@ export default function SettingsPage() {
   });
   const [profileEditing, setProfileEditing] = useState(false);
   const [profileSaving, setProfileSaving] = useState(false);
-  
+
   // Password form state
   const [passwordData, setPasswordData] = useState({
     old_password: '',
@@ -23,7 +23,10 @@ export default function SettingsPage() {
     confirm_password: '',
   });
   const [passwordSaving, setPasswordSaving] = useState(false);
-  
+
+  // Preferences state
+  const [emailNotifications, setEmailNotifications] = useState(true);
+
   // Notification state
   const [success, setSuccess] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -37,6 +40,14 @@ export default function SettingsPage() {
       });
     }
   }, [user]);
+
+  // Initialize preferences from localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem('emailNotifications');
+    if (saved !== null) {
+      setEmailNotifications(JSON.parse(saved));
+    }
+  }, []);
 
   // Clear notifications after 5 seconds
   useEffect(() => {
@@ -60,12 +71,12 @@ export default function SettingsPage() {
 
   const handleProfileSave = async () => {
     if (!user) return;
-    
+
     setProfileSaving(true);
     setError(null);
-    
+
     try {
-      await apiClient.updateUser(user.id, {
+      await apiClient.updateCurrentUser({
         username: profileData.username,
         email: profileData.email,
       });
@@ -85,26 +96,26 @@ export default function SettingsPage() {
 
   const handlePasswordSave = async () => {
     if (!user) return;
-    
+
     // Validate passwords
     if (!passwordData.old_password || !passwordData.new_password) {
       setError('Please fill in all password fields');
       return;
     }
-    
+
     if (passwordData.new_password !== passwordData.confirm_password) {
       setError('New passwords do not match');
       return;
     }
-    
+
     if (passwordData.new_password.length < 6) {
       setError('New password must be at least 6 characters');
       return;
     }
-    
+
     setPasswordSaving(true);
     setError(null);
-    
+
     try {
       await apiClient.changePassword(user.id, {
         old_password: passwordData.old_password,
@@ -122,6 +133,41 @@ export default function SettingsPage() {
       setPasswordSaving(false);
     }
   };
+
+  const handleEmailNotificationsToggle = () => {
+    const newValue = !emailNotifications;
+    setEmailNotifications(newValue);
+    localStorage.setItem('emailNotifications', JSON.stringify(newValue));
+    setSuccess('Email notification preferences updated!');
+  };
+
+  // const handleDeleteAccount = async () => {
+  //   if (!user) return;
+
+  //   if (!confirm('⚠️ WARNING: This will permanently delete your account and all associated data. This action cannot be undone. Are you absolutely sure?')) {
+  //     return;
+  //   }
+
+  //   // Second confirmation
+  //   const confirmText = prompt('Type "DELETE" in capital letters to confirm account deletion:');
+  //   if (confirmText !== 'DELETE') {
+  //     setError('Account deletion cancelled - confirmation text did not match');
+  //     return;
+  //   }
+
+  //   try {
+  //     await apiClient.deleteUser(user.id);
+  //     setSuccess('Account deleted successfully. Redirecting...');
+
+  //     // Logout and redirect after a short delay
+  //     setTimeout(() => {
+  //       useAuthStore.getState().logout();
+  //       window.location.href = '/login';
+  //     }, 2000);
+  //   } catch (err: any) {
+  //     setError(err.response?.data?.detail || 'Failed to delete account. Please contact support.');
+  //   }
+  // };
 
   if (!user) {
     return (
@@ -315,39 +361,15 @@ export default function SettingsPage() {
         <div className="space-y-4">
           <div className="flex items-center justify-between">
             <div>
-              <label className="text-sm font-medium text-gray-900">Email Notifications</label>
-              <p className="text-sm text-gray-600 mt-1">Receive email updates about your account</p>
+              <label className="text-sm font-medium text-gray-900 dark:text-white">Email Notifications</label>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Receive email updates about your account</p>
             </div>
             <input
               type="checkbox"
-              defaultChecked={true}
-              className="w-5 h-5 text-blue-600 rounded"
-              onChange={() => {}}
+              checked={emailNotifications}
+              className="w-5 h-5 text-blue-600 rounded cursor-pointer"
+              onChange={handleEmailNotificationsToggle}
             />
-          </div>
-
-          <div className="flex items-center justify-between border-t pt-4">
-            <div>
-              <label className="text-sm font-medium text-gray-900">Two-Factor Authentication</label>
-              <p className="text-sm text-gray-600 mt-1">Add an extra layer of security to your account</p>
-            </div>
-            <input
-              type="checkbox"
-              defaultChecked={false}
-              className="w-5 h-5 text-blue-600 rounded"
-              onChange={() => {}}
-              disabled
-            />
-          </div>
-
-          <div className="flex items-center justify-between border-t pt-4">
-            <div>
-              <label className="text-sm font-medium text-gray-900">API Access</label>
-              <p className="text-sm text-gray-600 mt-1">Generate API keys for programmatic access</p>
-            </div>
-            <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
-              Manage →
-            </button>
           </div>
         </div>
       </SettingsCard>

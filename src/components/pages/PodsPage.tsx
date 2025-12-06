@@ -34,9 +34,9 @@ export default function PodsPage({ projectId }: PodsPageProps) {
             setLoading(true);
             const data = await apiClient.getPods(projectId);
             // Filter by search query
-            let filtered = data;
+            let filtered = data?.pods;
             if (searchQuery) {
-                filtered = data.filter((p: Pod) =>
+                filtered = data?.pods.filter((p: Pod) =>
                     p.name.toLowerCase().includes(searchQuery.toLowerCase())
                 );
             }

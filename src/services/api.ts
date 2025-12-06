@@ -69,6 +69,16 @@ class APIClient {
     }
   }
 
+  async logout() {
+    try {
+      await this.client.post('/logout');
+    } catch (error) {
+      console.error('Logout error:', error);
+    } finally {
+      Cookie.remove('access_token');
+    }
+  }
+
   // User endpoints
   async getUsers(skip: number = 0, limit: number = 100) {
     const response = await this.client.get('/users/', {
@@ -79,6 +89,11 @@ class APIClient {
 
   async getCurrentUser() {
     const response = await this.client.get('/users/me');
+    return response.data;
+  }
+
+  async updateCurrentUser(data: { username?: string; email?: string }) {
+    const response = await this.client.put('/users/me', data);
     return response.data;
   }
 
@@ -162,7 +177,15 @@ class APIClient {
     return response.data;
   }
 
-  async createDeployment(projectId: string, data: { name: string; image: string; replicas?: number; environment?: Record<string, string> }) {
+  async createDeployment(projectId: string, data: {
+    name: string;
+    image: string;
+    replicas?: number;
+    port?: number;
+    image_pull_policy?: string;
+    service_type?: string;
+    environment?: Record<string, string>
+  }) {
     const response = await this.client.post(`/projects/${projectId}/deployments/`, data);
     return response.data;
   }

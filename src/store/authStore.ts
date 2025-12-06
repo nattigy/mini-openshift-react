@@ -9,6 +9,8 @@ interface User {
   role: string;
 }
 
+import { apiClient } from '@/services/api';
+
 interface AuthStore {
   user: User | null;
   token: string | null;
@@ -18,7 +20,7 @@ interface AuthStore {
   setToken: (token: string | null) => void;
   setIsLoading: (loading: boolean) => void;
   setError: (error: string | null) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
   initialize: () => void;
 }
 
@@ -40,8 +42,8 @@ export const useAuthStore = create<AuthStore>((set: any) => ({
   setIsLoading: (isLoading: any) => set({ isLoading }),
   setError: (error: any) => set({ error }),
 
-  logout: () => {
-    Cookie.remove('access_token');
+  logout: async () => {
+    await apiClient.logout();
     set({ user: null, token: null });
   },
 

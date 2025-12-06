@@ -4,6 +4,7 @@ import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useSidebarStore } from '@/store/sidebarStore';
+import { useAuthStore } from '@/store/authStore';
 
 interface NavItem {
   name: string;
@@ -84,9 +85,8 @@ export const Sidebar: React.FC = () => {
     <>
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 pt-20 h-screen w-64 bg-gray-900 text-white transform transition-transform duration-300 z-30 lg:translate-x-0 lg:sticky lg:top-0 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed left-0 top-0 pt-20 h-screen w-64 bg-gray-900 text-white transform transition-transform duration-300 z-30 lg:translate-x-0 lg:sticky lg:top-0 ${isOpen ? 'translate-x-0' : '-translate-x-full'
+          }`}
       >
         <nav className="px-4 py-6 space-y-2">
           {navItems.map((item) => {
@@ -95,11 +95,10 @@ export const Sidebar: React.FC = () => {
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
-                  isActive
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-400 hover:text-white hover:bg-gray-800'
-                }`}
+                className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${isActive
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-400 hover:text-white hover:bg-gray-800'
+                  }`}
                 onClick={close}
               >
                 {item.icon}
@@ -107,6 +106,24 @@ export const Sidebar: React.FC = () => {
               </Link>
             );
           })}
+
+          <button
+            onClick={() => {
+              useAuthStore.getState().logout();
+              window.location.href = '/login';
+            }}
+            className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors text-red-400 hover:text-white hover:bg-red-900/20 mt-auto"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+            <span className="font-medium">Logout</span>
+          </button>
         </nav>
       </aside>
 

@@ -39,6 +39,22 @@ export default function DashboardPage() {
           ...prev,
           totalUsers: users.length,
         }));
+
+        // Fetch deployments count from all projects
+        let totalDeployments = 0;
+        for (const project of projects) {
+          try {
+            const deployments = await apiClient.getDeployments(project.id);
+            totalDeployments += deployments.deployments?.length || 0;
+          } catch (err) {
+            // Skip if deployments can't be fetched
+            console.error(`Failed to fetch deployments for project ${project.id}:`, err);
+          }
+        }
+        setStats((prev) => ({
+          ...prev,
+          activeDeployments: totalDeployments,
+        }));
       } catch (error) {
         console.error('Failed to fetch dashboard data:', error);
       } finally {
@@ -61,21 +77,21 @@ export default function DashboardPage() {
     <div className="space-y-8">
       {/* Welcome Section */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
           Welcome back, {user?.username}! 👋
         </h1>
-        <p className="text-gray-600 mt-2">Here's what's happening with your projects</p>
+        <p className="text-gray-600 dark:text-gray-400 mt-2">Here's what's happening with your projects</p>
       </div>
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-blue-100 text-blue-600 text-xl font-bold">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-xl font-bold">
               📦
             </div>
-            <p className="text-gray-600 text-sm mt-2">Total Projects</p>
-            <p className="text-3xl font-bold text-gray-900 mt-1">
+            <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">Total Projects</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">
               {stats.totalProjects}
             </p>
           </div>
@@ -83,11 +99,11 @@ export default function DashboardPage() {
 
         <Card>
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-green-100 text-green-600 text-xl font-bold">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-green-100 dark:bg-green-900/20 text-green-600 dark:text-green-400 text-xl font-bold">
               👥
             </div>
-            <p className="text-gray-600 text-sm mt-2">Total Users</p>
-            <p className="text-3xl font-bold text-gray-900 mt-1">
+            <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">Total Users</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">
               {stats.totalUsers}
             </p>
           </div>
@@ -95,11 +111,11 @@ export default function DashboardPage() {
 
         <Card>
           <div className="text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-purple-100 text-purple-600 text-xl font-bold">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 text-xl font-bold">
               🚀
             </div>
-            <p className="text-gray-600 text-sm mt-2">Active Deployments</p>
-            <p className="text-3xl font-bold text-gray-900 mt-1">
+            <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">Active Deployments</p>
+            <p className="text-3xl font-bold text-gray-900 dark:text-white mt-1">
               {stats.activeDeployments}
             </p>
           </div>
@@ -113,17 +129,17 @@ export default function DashboardPage() {
             {recentProjects.map((project) => (
               <div
                 key={project.id}
-                className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center justify-between p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
               >
                 <div>
-                  <h4 className="font-semibold text-gray-900">{project.name}</h4>
-                  <p className="text-sm text-gray-500 mt-1">
+                  <h4 className="font-semibold text-gray-900 dark:text-white">{project.name}</h4>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
                     {project.description || 'No description'}
                   </p>
                 </div>
                 <Link
                   href={`/projects/${project.id}`}
-                  className="text-blue-600 hover:underline font-medium"
+                  className="text-blue-600 dark:text-blue-400 hover:underline font-medium"
                 >
                   View →
                 </Link>
@@ -132,13 +148,13 @@ export default function DashboardPage() {
           </div>
         ) : (
           <div className="text-center py-8">
-            <p className="text-gray-600 mb-4">No projects yet</p>
+            <p className="text-gray-600 dark:text-gray-400 mb-4">No projects yet</p>
             <Link href="/projects">
               <Button variant="primary">Create Your First Project</Button>
             </Link>
           </div>
         )}
-        <div className="mt-6 pt-6 border-t border-gray-200 flex justify-center">
+        <div className="mt-6 pt-6 border-t border-gray-200 dark:border-gray-700 flex justify-center">
           <Link href="/projects">
             <Button variant="ghost">View All Projects →</Button>
           </Link>

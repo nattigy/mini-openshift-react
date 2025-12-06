@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useAuthStore } from '@/store/authStore';
 import { apiClient } from '@/services/api';
+import { ThemeProvider } from '@/components/ThemeProvider';
 
 export function Providers({ children }: { children: React.ReactNode }) {
   const initialize = useAuthStore((state) => state.initialize);
@@ -27,5 +28,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
     fetchUser();
   }, [token, initialize, setUser]);
 
-  return <>{children}</>;
+  return (
+    <ThemeProvider>
+      {children}
+    </ThemeProvider>
+  );
 }
